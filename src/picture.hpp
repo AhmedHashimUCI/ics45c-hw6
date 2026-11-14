@@ -24,6 +24,8 @@ public:
 
     ~Picture();
 
+	void swap(Picture& other);
+
     void add(const Shape& shape);
 
     void print_all(std::ostream& out) const;

@@ -6,7 +6,7 @@
 class Square: public Rectangle{
 
 public: 
-	square(Point center, std::string name, int side);
+	Square(Point center, std::string name, int side);
 
 
 };

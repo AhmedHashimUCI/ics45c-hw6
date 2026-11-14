@@ -445,3 +445,125 @@ TEST(SquareTest, ClonePreservesBehavior) {
     delete copy;
 }
 
+TEST(PictureTest, CopyAssignment) {
+    Picture original;
+    Circle c{{0, 0}, "Circle_1", 3};
+    original.add(c);
+
+    Picture destination;
+    Rectangle r{{0, 0}, "Old", 4, 5};
+    destination.add(r);
+
+    destination = original;
+
+    EXPECT_DOUBLE_EQ(
+        destination.total_area(),
+        original.total_area()
+    );
+	std::ostringstream a;
+    std::ostringstream b;
+
+    original.print_all(a);
+    destination.print_all(b);
+
+    EXPECT_EQ(a.str(), b.str());
+}
+
+
+TEST(PictureTest, SelfCopyAssignment) {
+    Picture p;
+    Circle c{{0, 0}, "C1", 3};
+    p.add(c);
+
+    Picture& alias = p;
+    p = alias;
+
+    EXPECT_NEAR(
+        p.total_area(),
+        9.0 * std::numbers::pi,
+        0.00001
+    );
+}
+
+TEST(PictureTest, CopyEmptyPicture) {
+    Picture original;
+
+    Picture copy(original);
+
+    EXPECT_DOUBLE_EQ(copy.total_area(), 0.0);
+
+    std::ostringstream out;
+    copy.print_all(out);
+
+    EXPECT_EQ(out.str(), "");
+}
+
+TEST(PictureTest, CopyIsIndependent) {
+    Picture original;
+
+    Circle c{{0, 0}, "Circle_1", 2};
+    original.add(c);
+
+    Picture copy(original);
+
+    Rectangle r{{0, 0}, "Rectangle_1", 3, 4};
+    original.add(r);
+
+    EXPECT_NE(
+        original.total_area(),
+        copy.total_area()
+    );
+
+    EXPECT_NEAR(
+        copy.total_area(),
+        4.0 * std::numbers::pi,
+        0.00001
+    );
+}
+
+TEST(PictureTest, MoveConstructor) {
+    Picture original;
+
+    Circle c{{0, 0}, "C1", 3};
+    original.add(c);
+
+    Picture moved(std::move(original));
+
+    EXPECT_NEAR(
+        moved.total_area(),
+        9.0 * std::numbers::pi,
+        0.00001
+    );
+
+    EXPECT_DOUBLE_EQ(original.total_area(), 0.0);
+}
+
+TEST(PictureTest, MoveAssignment) {
+    Picture source;
+
+    Circle c{{0, 0}, "C1", 2};
+    source.add(c);
+
+    Picture destination;
+
+    Rectangle r{{0, 0}, "Old", 4, 5};
+    destination.add(r);
+
+    destination = std::move(source);
+
+    EXPECT_NEAR(
+        destination.total_area(),
+        4.0 * std::numbers::pi,
+        0.00001
+    );
+
+    EXPECT_DOUBLE_EQ(source.total_area(), 0.0);
+}
+
+TEST(PictureTest, MoveEmptyPicture) {
+    Picture original;
+    Picture moved(std::move(original));
+
+    EXPECT_DOUBLE_EQ(moved.total_area(), 0.0);
+    EXPECT_DOUBLE_EQ(original.total_area(), 0.0);
+}

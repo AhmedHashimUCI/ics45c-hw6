@@ -7,6 +7,57 @@ Picture::Picture():
 		head(nullptr), tail(nullptr){}
 
 
+
+Picture::Picture(const Picture& other)
+		:head(nullptr), tail(nullptr){
+			
+			for(ListNode* p = other.head; p != nullptr; p = p->next){
+			
+				add(*p->shape);
+
+			}
+	
+		}
+
+
+void Picture::swap(Picture& other){
+	std::swap(head, other.head);
+	std::swap(tail, other.tail);
+
+
+}
+
+Picture& Picture::operator=(const Picture& other){
+	if(this != &other){
+		Picture newpic(other);
+		swap(newpic);
+	}
+
+	return *this;
+
+}
+
+
+Picture::Picture(Picture&& other) noexcept
+		:head(other.head), tail(other.tail){
+			other.head = nullptr;
+			other.tail = nullptr;
+
+		}
+
+
+Picture& Picture::operator=(Picture&& other) noexcept {
+	if(this != &other){
+	Picture newpic(std::move(other));
+	swap(newpic);
+
+	}
+
+	return *this;
+
+}
+
+
 void Picture::add(const Shape& shape){
 	Shape* clone = shape.clone();
 	ListNode* node = new ListNode{clone, nullptr};
