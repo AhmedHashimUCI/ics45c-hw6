@@ -3,7 +3,7 @@
 #include <utility>
 
 
-Shape::Shape(Point center, std::string_name)
+Shape::Shape(Point center, std::string name)
 	: center(center), name(std::move(name)){}
 
 

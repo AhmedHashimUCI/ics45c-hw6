@@ -1,3 +1,30 @@
 #include "circle.hpp"
 #include <iostream>
 #include <numbers>
+#include <utility>
+
+Circle::Circle(Point center, std::string name, int radius)
+		:Shape(center, std::move(name)), radius(radius){}
+
+
+double Circle::area() const {
+	return std::numbers::pi * radius * radius;
+
+}
+
+
+Circle* Circle::clone() const {
+	return new Circle(*this);
+
+}
+
+void Circle::draw(std::ostream& out) const{
+	for (int y = -radius; y <= radius; y += 2){
+		for(int x = -radius; x <= radius; ++x){
+			out << ((x * x) + (y * y) <= radius * radius ? '*' :' ');
+	
+		}
+		out << std::endl;
+	}
+
+}
