@@ -300,3 +300,89 @@ TEST(PictureTest, CircleAndRectangle) {
     );
 }
 
+
+TEST(TriangleTest, CalculatesArea) {
+    Triangle t{{0, 0}, "T1", 5, 4};
+
+    EXPECT_DOUBLE_EQ(t.area(), 10.0);
+}
+
+TEST(TriangleTest, FractionalArea) {
+    Triangle t{{0, 0}, "T1", 3, 3};
+
+    EXPECT_DOUBLE_EQ(t.area(), 4.5);
+}
+
+TEST(TriangleTest, ZeroBase) {
+    Triangle t{{0, 0}, "Zero", 0, 5};
+
+    EXPECT_DOUBLE_EQ(t.area(), 0.0);
+}
+
+TEST(TriangleTest, ZeroHeight) {
+    Triangle t{{0, 0}, "Zero", 5, 0};
+
+    EXPECT_DOUBLE_EQ(t.area(), 0.0);
+}
+
+TEST(TriangleTest, DrawTriangle) {
+    Triangle t{{0, 0}, "T1", 5, 5};
+
+    std::ostringstream out;
+    t.draw(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "  *\n"
+        " ***\n"
+        "*****\n"
+    );
+}
+
+TEST(TriangleTest, DrawUnequalDimensions) {
+    Triangle t{{0, 0}, "T1", 3, 5};
+
+    std::ostringstream out;
+    t.draw(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "  *\n"
+        " ***\n"
+        "*****\n"
+    );
+}
+
+TEST(TriangleTest, CloneProducesIndependentCopy) {
+    Triangle original{{2, 3}, "Original", 4, 6};
+
+    Triangle* copy = original.clone();
+
+    ASSERT_NE(copy, nullptr);
+    EXPECT_NE(copy, &original);
+
+    EXPECT_DOUBLE_EQ(copy->area(), original.area());
+
+    std::ostringstream a;
+    std::ostringstream b;
+
+    original.print(a);
+    copy->print(b);
+
+    EXPECT_EQ(a.str(), b.str());
+
+    delete copy;
+}
+
+TEST(TriangleTest, PrintFormat) {
+    Triangle t{{1, 2}, "Triangle_1", 3, 3};
+
+    std::ostringstream out;
+    t.print(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "Triangle_1 at (1, 2) area = 4.5\n"
+    );
+}
+
