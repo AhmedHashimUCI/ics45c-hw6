@@ -386,3 +386,62 @@ TEST(TriangleTest, PrintFormat) {
     );
 }
 
+
+TEST(SquareTest, CalculatesArea) {
+    Square s{{0, 0}, "S1", 5};
+
+    EXPECT_DOUBLE_EQ(s.area(), 25.0);
+}
+
+TEST(SquareTest, ZeroSide) {
+    Square s{{0, 0}, "S1", 0};
+
+    EXPECT_DOUBLE_EQ(s.area(), 0.0);
+}
+
+TEST(SquareTest, DrawCorrectly) {
+    Square s{{0, 0}, "S1", 4};
+
+    std::ostringstream out;
+    s.draw(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "****\n"
+        "****\n"
+    );
+}
+
+TEST(SquareTest, PrintFormat) {
+    Square s{{2, 3}, "Square_1", 4};
+
+    std::ostringstream out;
+    s.print(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "Square_1 at (2, 3) area = 16\n"
+    );
+}
+
+TEST(SquareTest, ClonePreservesBehavior) {
+    Square original{{1, 2}, "S1", 5};
+
+    Shape* copy = original.clone();
+
+    ASSERT_NE(copy, nullptr);
+    EXPECT_NE(copy, &original);
+
+    EXPECT_DOUBLE_EQ(copy->area(), 25.0);
+
+    std::ostringstream originalOutput;
+    std::ostringstream copyOutput;
+
+    original.print(originalOutput);
+    copy->print(copyOutput);
+
+    EXPECT_EQ(originalOutput.str(), copyOutput.str());
+
+    delete copy;
+}
+
