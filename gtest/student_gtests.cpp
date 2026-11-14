@@ -90,3 +90,111 @@ TEST(CircleTest, DrawRadiusThree) {
     );
 }
 
+
+TEST(PictureTest, EmptyPicturePrintsNothing) {
+    Picture p;
+
+    std::ostringstream out;
+    p.print_all(out);
+
+    EXPECT_EQ(out.str(), "");
+}
+
+TEST(PictureTest, SingleCirclePrintsAndDraws) {
+    Picture p;
+    Circle c{{0, 0}, "Circle_1", 1};
+
+    p.add(c);
+
+    std::ostringstream out;
+    p.print_all(out);
+
+   EXPECT_EQ(
+    out.str(),
+    "Circle_1 at (0, 0) area = 3.14159\n"
+    " * \n"
+    " * \n"
+);
+}
+
+TEST(PictureTest, PreservesInsertionOrder) {
+    Picture p;
+
+    Circle first{{0, 0}, "First", 0};
+    Circle second{{1, 2}, "Second", 0};
+
+    p.add(first);
+    p.add(second);
+
+    std::ostringstream out;
+    p.print_all(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "First at (0, 0) area = 0\n"
+        "*\n"
+        "Second at (1, 2) area = 0\n"
+        "*\n"
+    );
+}
+
+
+TEST(PictureTest, EmptyPictureArea) {
+    Picture p;
+
+    EXPECT_DOUBLE_EQ(p.total_area(), 0.0);
+}
+
+TEST(PictureTest, EmptyPictureDraw) {
+    Picture p;
+
+    std::ostringstream out;
+    p.draw_all(out);
+
+    EXPECT_EQ(out.str(), "");
+}
+
+TEST(PictureTest, SingleCircleArea) {
+    Picture p;
+    Circle c{{0, 0}, "C1", 2};
+
+    p.add(c);
+
+    EXPECT_NEAR(p.total_area(), 12.5663706, 0.00001);
+}
+
+TEST(PictureTest, MultipleCircleAreas) {
+    Picture p;
+
+    Circle first{{0, 0}, "First", 2};
+    Circle second{{1, 1}, "Second", 3};
+
+    p.add(first);
+    p.add(second);
+
+    double expected = 13.0 * std::numbers::pi;
+
+    EXPECT_NEAR(p.total_area(), expected, 0.00001);
+}
+
+TEST(PictureTest, DrawAllPreservesOrder) {
+    Picture p;
+
+    Circle first{{0, 0}, "First", 0};
+    Circle second{{0, 0}, "Second", 1};
+
+    p.add(first);
+    p.add(second);
+
+    std::ostringstream out;
+    p.draw_all(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "*\n"
+        " * \n"
+        " * \n"
+    );
+}
+
+
