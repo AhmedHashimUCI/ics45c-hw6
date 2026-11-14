@@ -198,3 +198,105 @@ TEST(PictureTest, DrawAllPreservesOrder) {
 }
 
 
+TEST(RectangleTest, CalculatesArea) {
+    Rectangle r{{0, 0}, "R1", 4, 6};
+
+    EXPECT_DOUBLE_EQ(r.area(), 24.0);
+}
+
+TEST(RectangleTest, ZeroWidth) {
+    Rectangle r{{0, 0}, "R1", 0, 5};
+
+    EXPECT_DOUBLE_EQ(r.area(), 0.0);
+}
+
+TEST(RectangleTest, ZeroHeight) {
+    Rectangle r{{0, 0}, "R1", 5, 0};
+
+    EXPECT_DOUBLE_EQ(r.area(), 0.0);
+}
+
+TEST(RectangleTest, DrawCorrectDimensions) {
+    Rectangle r{{0, 0}, "R1", 4, 5};
+
+    std::ostringstream out;
+    r.draw(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "****\n"
+        "****\n"
+        "****\n"
+    );
+}
+
+TEST(RectangleTest, DrawNonSymmetricDimensions) {
+    Rectangle r{{0, 0}, "R1", 5, 2};
+
+    std::ostringstream out;
+    r.draw(out);
+
+    EXPECT_EQ(out.str(), "*****\n");
+}
+
+TEST(RectangleTest, CloneProducesIndependentCopy) {
+    Rectangle original{{1, 2}, "Original", 4, 6};
+
+    Rectangle* copy = original.clone();
+
+    ASSERT_NE(copy, nullptr);
+    EXPECT_NE(copy, &original);
+
+    EXPECT_DOUBLE_EQ(copy->area(), original.area());
+
+    std::ostringstream a;
+    std::ostringstream b;
+
+    original.print(a);
+    copy->print(b);
+
+    EXPECT_EQ(a.str(), b.str());
+
+    delete copy;
+}
+
+TEST(RectangleTest, PrintFormat) {
+    Rectangle r{{3, 7}, "Rectangle_1", 4, 6};
+
+    std::ostringstream out;
+    r.print(out);
+
+    EXPECT_EQ(
+        out.str(),
+        "Rectangle_1 at (3, 7) area = 24\n"
+    );
+}
+
+
+TEST(PictureTest, CircleAndRectangle) {
+    Picture p;
+
+    Circle c{{0, 0}, "Circle_1", 2};
+    Rectangle r{{0, 0}, "Rectangle_1", 4, 5};
+
+    p.add(c);
+    p.add(r);
+
+    double expected = 4 * std::numbers::pi + 20;
+
+    EXPECT_NEAR(p.total_area(), expected, 0.00001);
+
+    std::ostringstream out;
+    p.print_all(out);
+
+    std::string result = out.str();
+
+    EXPECT_NE(result.find("Circle_1"), std::string::npos);
+    EXPECT_NE(result.find("Rectangle_1"), std::string::npos);
+
+    EXPECT_LT(
+        result.find("Circle_1"),
+        result.find("Rectangle_1")
+    );
+}
+
